@@ -150,16 +150,16 @@ public class BaseTamponDao {
         List<String> packages = new ArrayList<>();
         try {
             String query;
-            query = "UPDATE psnext.\"C1_mstt_synchro_cost_codes_IN\" SET \"PackageName\"='"+UUID.randomUUID().toString()+"' WHERE \"PackageName\" is null";
+            query = "UPDATE psnext.\"C1_mstt_synchro_cost_codes_IN\" SET \"PackageName\"='"+UUID.randomUUID().toString()+"' WHERE \"PackageName\" is null and \"ExecutionDate\" is null";
             LOG.debug(query);
             dbcon.executeUpdate(query);
-            query = "SELECT distinct \"PackageName\" FROM psnext.\"C1_mstt_synchro_cost_codes_IN\"";
+            query = "SELECT distinct \"PackageName\" FROM psnext.\"C1_mstt_synchro_cost_codes_IN\" WHERE \"ExecutionDate\" is null";
             LOG.debug(query);
             ResultSet rs = dbcon.executeRequete(query);
             while (rs.next()) {
                 packages.add(rs.getString(1));
             }
-            query = "UPDATE psnext.\"C1_mstt_synchro_cost_codes_IN\" SET \"ExecutionDate\"='"+sdf.format(cal.getTime())+"'";
+            query = "UPDATE psnext.\"C1_mstt_synchro_cost_codes_IN\" SET \"ExecutionDate\"='"+sdf.format(cal.getTime())+"' WHERE \"ExecutionDate\" is null";
             LOG.debug(query);
             dbcon.executeUpdate(query);
         } catch (SQLException ex) {

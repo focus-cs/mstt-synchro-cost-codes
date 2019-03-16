@@ -20,7 +20,7 @@ import java.util.List;
 
 public class Runner {
 	
-	public static final String APP_INFO = "Mstt Synchro Cost Codes 2 v1.7";
+	public static final String APP_INFO = "Mstt Synchro Cost Codes 2 v1.8";
 
 	/**
 	 * Logger Class instance.
