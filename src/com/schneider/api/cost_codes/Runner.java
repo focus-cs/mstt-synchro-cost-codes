@@ -11,11 +11,16 @@ import org.apache.log4j.PropertyConfigurator;
 
 import com.schneider.api.cost_codes.business.ProjectsManager;
 import com.schneider.api.cost_codes.business.UserLog;
+import com.schneider.api.cost_codes.dao.BaseTamponDao;
+import com.schneider.api.cost_codes.database.DbConnection;
+import com.schneider.api.cost_codes.database.DbController;
+import com.schneider.api.cost_codes.database.DbError;
 import com.sciforma.psnext.api.Session;
+import java.util.List;
 
 public class Runner {
 	
-	public static final String APP_INFO = "Mstt Synchro Cost Codes 2 v1.6 (2019/03/01)";
+	public static final String APP_INFO = "Mstt Synchro Cost Codes 2 v1.7";
 
 	/**
 	 * Logger Class instance.
@@ -25,7 +30,10 @@ public class Runner {
 	/**
 	 * UserLog Class instance.
 	 */
-	private static final UserLog USER_LOG = UserLog.getInstance();
+        private static DbConnection dbcon;
+        
+	private static UserLog USER_LOG;
+        private static  List<String> packages;
 
 	/**
 	 * @param args
@@ -45,20 +53,25 @@ public class Runner {
 			try {
 				// load PSNext properties
 				final Properties properties = readPropertiesFromFile(argsCopy[0]);
+                                initDB(properties);
+                                checkPackageName();
 				LOG.debug(argsCopy[0] + " properties file loaded");
-
+                                USER_LOG = UserLog.getInstance(dbcon);
+                                USER_LOG.setConnection(dbcon);
 				try {
 					// init session
 					final Session session = new Session(properties.getProperty("psnext.url"));
 					session.login(properties.getProperty("psnext.login"), properties.getProperty("psnext.password").toCharArray());
 					LOG.debug("Connected to PSNext");
 					// Launch process
-					new ProjectsManager(session).execute(properties, session);
+                                        for (String packageName : packages) {
+                                            new ProjectsManager(session, packageName).execute(properties, session, dbcon);
+                                        }
 				} catch (Exception e1) {
 					// Exception to connect to PSNext
 					LOG.error(e1.getMessage());
 					// USER_LOG.error("The API cannot connect to MSTT server.");
-					USER_LOG.error("", "", "", 1);
+					USER_LOG.error("", "", "", 1, "N/A");
 				}
 				
 			} catch (Exception e) {
@@ -88,5 +101,24 @@ public class Runner {
 		properties.load(resourceAsStream);
 		return properties;
 	}
+        
+        private static void initDB(Properties properties) {
+        try {
+            DbController dbc = new DbController();
+            dbc.readDbConfiguration(properties);
+            dbcon = new DbConnection();
+            dbcon.setDbModel(dbc.getDbModel());
+            dbcon.connexion();
+        } catch (DbError ex) {
+            LOG.error("Fail to connect DB");
+        } catch (Exception ex) {
+            LOG.error("Fail to connect DB");
+        }
+    }
+
+    private static void checkPackageName() {
+        BaseTamponDao dao = new BaseTamponDao(dbcon);
+        packages = dao.getAllPackageName();
+    }
 
 }

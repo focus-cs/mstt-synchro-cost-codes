@@ -1,6 +1,5 @@
 package com.schneider.api.cost_codes.database;
 
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -17,7 +16,9 @@ public class DbConnection {
     private String requete = null;
     private DbModel dbModel = null;
 
-    /** Creates a new instance of DataBase */
+    /**
+     * Creates a new instance of DataBase
+     */
     public DbConnection() {
     }
 
@@ -46,6 +47,7 @@ public class DbConnection {
 
     /**
      * Connexion a la base de donnees
+     *
      * @param ()
      * @return void
      */
@@ -74,10 +76,15 @@ public class DbConnection {
     public void setStatement(Statement statement) {
         this.statement = statement;
     }
-    public ResultSet executeRequete(String r) throws SQLException
-   {
-    setRequete(r);
-    return statement.executeQuery(r);
-   }
+
+    public ResultSet executeRequete(String r) throws SQLException {
+        setRequete(r);
+        return statement.executeQuery(r);
+    }
+
+    public int executeUpdate(String r) throws SQLException {
+        setRequete(r);
+        return statement.executeUpdate(r);
+    }
 
 }

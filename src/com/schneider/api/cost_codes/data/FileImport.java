@@ -139,7 +139,7 @@ public class FileImport {
 							|| "".equals(accSystem) || "".equals(strClosed) || "".equals(operation)) {
 						// USER_LOG.warning(String.format("Bad line format at line number : %s",
 						// lineNumber));
-						USER_LOG.warning(projectID, globalID, taskID, 20);
+						USER_LOG.warning(projectID, globalID, taskID, 20, sourceFile);
 						continue;
 					}
 
@@ -176,7 +176,7 @@ public class FileImport {
 						// USER_LOG.warning(String.format("The type of change <<%s>> is not identified
 						// in the list of standard actions at line number : %s", operation,
 						// lineNumber));
-						USER_LOG.warning(projectID, globalID, taskID, 8);
+						USER_LOG.warning(projectID, globalID, taskID, 8,sourceFile);
 						continue;
 					}
 
@@ -199,7 +199,7 @@ public class FileImport {
 					if (packageImport.getTaskImport(taskID) != null) {
 						// USER_LOG.warning(String.format("The task <<%s>> is listed several time in
 						// <<%s>>.", taskID, sourceFile));
-						USER_LOG.warning(projectID, globalID, taskID, 3);
+						USER_LOG.warning(projectID, globalID, taskID, 3, sourceFile);
 					}
 
 					packageImport.addTaskImport(taskImport);
@@ -207,7 +207,7 @@ public class FileImport {
 				} else {
 					// USER_LOG.warning(String.format("Bad line format at line number : %s",
 					// lineNumber));
-					USER_LOG.warning("", "", "", 11);
+					USER_LOG.warning("", "", "", 11,sourceFile);
 				}
 				
 			}

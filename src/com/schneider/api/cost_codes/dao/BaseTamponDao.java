@@ -5,7 +5,6 @@
  */
 package com.schneider.api.cost_codes.dao;
 
-import com.schneider.api.cost_codes.business.ProjectsManager;
 import com.schneider.api.cost_codes.business.UserLog;
 import com.schneider.api.cost_codes.data.PackageImport;
 import com.schneider.api.cost_codes.data.ProjectImport;
@@ -13,9 +12,11 @@ import com.schneider.api.cost_codes.data.TaskImport;
 import com.schneider.api.cost_codes.database.DbConnection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
-import java.util.logging.Level;
+import java.util.UUID;
 import org.apache.log4j.Logger;
 
 /**
@@ -33,9 +34,13 @@ public class BaseTamponDao {
     private final static String CLOSE_OPER = "close";
     private final static String REOPEN_OPER = "reopen";
     private static final String CHANGE_ID_OPER = "changeid";
+    private SimpleDateFormat sdf;
+    private Calendar cal;
 
     public BaseTamponDao(DbConnection dbcon) {
         this.dbcon = dbcon;
+        this.cal = Calendar.getInstance();
+        this.sdf = new SimpleDateFormat("yyyy-MM-dd");
     }
 
     public DbConnection getDbcon() {
@@ -46,16 +51,16 @@ public class BaseTamponDao {
         this.dbcon = dbcon;
     }
 
-    public List<ProjectImport> readDB() {
+    public List<ProjectImport> readDB(String packageName) {
         try {
             projectImportList = new ArrayList<ProjectImport>();
             String query;
-            query = "SELECT \"AccessCostCode\", \"ProjectID\", \"ID\", \"GlobalID\", \"NewID\", \"NewGlobalID\", \"Name\", \"AccountingSystem\", \"Closed\", \"Modification\", \"WBS Element ID\", \"Workpackage MS Id\", \"RE IP Owner\" FROM psnext.\"C1_mstt_synchro_cost_codes_IN\"";
+            query = "SELECT \"AccessCostCode\", \"ProjectID\", \"ID\", \"GlobalID\", \"NewID\", \"NewGlobalID\", \"Name\", \"AccountingSystem\", \"Closed\", \"Modification\", \"WBS Element ID\", \"Workpackage MS Id\", \"RE IP Owner\" FROM psnext.\"C1_mstt_synchro_cost_codes_IN\" WHERE \"PackageName\" ='" +packageName+"'";
             LOG.debug(query);
             ResultSet rs = dbcon.executeRequete(query);
             while (rs.next()) {
                 if ("".equals(rs.getString(12)) || "".equals(rs.getString(2)) || "".equals(rs.getString(3)) || "".equals(rs.getString(7)) || "".equals(rs.getString(8)) || "".equals(rs.getString(10))) {
-                    USER_LOG.warning(rs.getString(2), rs.getString(4), rs.getString(3), 20);
+                    USER_LOG.warning(rs.getString(2), rs.getString(4), rs.getString(3), 20, packageName);
                     continue;
                 }
                 TaskImport taskImport = new TaskImport();
@@ -81,7 +86,7 @@ public class BaseTamponDao {
                 } else if (CHANGE_ID_OPER.equalsIgnoreCase(operation)) {
                     taskImport.setModification(TaskImport.CHANGE_ID);
                 } else {
-                    USER_LOG.warning(rs.getString(2), rs.getString(4), rs.getString(3), 8);
+                    USER_LOG.warning(rs.getString(2), rs.getString(4), rs.getString(3), 8, packageName);
                     continue;
                 }
 
@@ -99,7 +104,7 @@ public class BaseTamponDao {
                 }
 
                 if (packageImport.getTaskImport(rs.getString(3)) != null) {
-                    USER_LOG.warning(rs.getString(2), rs.getString(4), rs.getString(3), 3);
+                    USER_LOG.warning(rs.getString(2), rs.getString(4), rs.getString(3), 3, packageName);
                 }
 
                 packageImport.addTaskImport(taskImport);
@@ -130,12 +135,45 @@ public class BaseTamponDao {
         this.projectImportList.add(projectImport);
     }
 
-    public void cleanData() {
+    public void cleanData(String packageName) {
         try {
             String query;
-            query = "DELETE FROM psnext.\"C1_mstt_synchro_cost_codes_IN\"";
+            query = "DELETE FROM psnext.\"C1_mstt_synchro_cost_codes_IN\" WHERE \"PackageName\" ='" +packageName+"'";
             LOG.debug(query);
-            dbcon.executeRequete(query);
+            dbcon.executeUpdate(query);
+        } catch (SQLException ex) {
+            LOG.error(ex);
+        }
+    }
+    
+    public List<String> getAllPackageName(){
+        List<String> packages = new ArrayList<>();
+        try {
+            String query;
+            query = "UPDATE psnext.\"C1_mstt_synchro_cost_codes_IN\" SET \"PackageName\"='"+UUID.randomUUID().toString()+"' WHERE \"PackageName\" is null";
+            LOG.debug(query);
+            dbcon.executeUpdate(query);
+            query = "SELECT distinct \"PackageName\" FROM psnext.\"C1_mstt_synchro_cost_codes_IN\"";
+            LOG.debug(query);
+            ResultSet rs = dbcon.executeRequete(query);
+            while (rs.next()) {
+                packages.add(rs.getString(1));
+            }
+            query = "UPDATE psnext.\"C1_mstt_synchro_cost_codes_IN\" SET \"ExecutionDate\"='"+sdf.format(cal.getTime())+"'";
+            LOG.debug(query);
+            dbcon.executeUpdate(query);
+        } catch (SQLException ex) {
+            LOG.error(ex);
+        }
+        return packages;
+    }
+    
+    public void writeLog(int status, String projectID, String globalID, String id,int errorCode, String packageName){
+        String query = "INSERT INTO psnext.\"C1_mstt_synchro_cost_codes_OUT\"(\"STATUS\", \"ProjectID\", \"GlobalID\", \"ID\", \"ERROR_CODE\", \"PackageName\", \"ExecutionDate\") "
+                     + "VALUES ("+status+", '"+projectID+"', '"+globalID+"', '"+id+"', "+errorCode+", '"+packageName+"', '"+sdf.format(cal.getTime())+"');";
+        try {
+            LOG.debug(query);
+            dbcon.executeUpdate(query);
         } catch (SQLException ex) {
             LOG.error(ex);
         }
