@@ -157,7 +157,7 @@ public class BaseTamponDao {
             LOG.debug(query);
             ResultSet rs = dbcon.executeRequete(query);
             while (rs.next()) {
-                packages.add(rs.getString(1));
+                packages.add(rs.getString(1).trim());
             }
             query = "UPDATE psnext.\"C1_mstt_synchro_cost_codes_IN\" SET \"ExecutionDate\"='"+sdf.format(cal.getTime())+"' WHERE \"ExecutionDate\" is null";
             LOG.debug(query);
