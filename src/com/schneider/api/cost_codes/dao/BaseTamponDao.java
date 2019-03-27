@@ -59,7 +59,7 @@ public class BaseTamponDao {
             LOG.debug(query);
             ResultSet rs = dbcon.executeRequete(query);
             while (rs.next()) {
-                if ("".equals(rs.getString(12)) || "".equals(rs.getString(2)) || "".equals(rs.getString(3)) || "".equals(rs.getString(7)) || "".equals(rs.getString(8)) || "".equals(rs.getString(10))) {
+                if ("".equals(rs.getString(1)) || "".equals(rs.getString(2)) || "".equals(rs.getString(3)) || "".equals(rs.getString(7)) || "".equals(rs.getString(8)) || "".equals(rs.getString(10))) {
                     USER_LOG.warning(rs.getString(2), rs.getString(4), rs.getString(3), 20, packageName);
                     continue;
                 }
@@ -96,17 +96,16 @@ public class BaseTamponDao {
                     projectImport.setProjectID(rs.getString(2));
                     this.addProjectImport(projectImport);
                 }
-                PackageImport packageImport = projectImport.getPackageImport(rs.getString(12));
+                PackageImport packageImport = projectImport.getPackageImport(rs.getString(1));
                 if (packageImport == null) {
                     packageImport = new PackageImport();
-                    packageImport.setPackageID(rs.getString(12));
+                    packageImport.setPackageID(rs.getString(1));
                     projectImport.addPackageImport(packageImport);
                 }
 
                 if (packageImport.getTaskImport(rs.getString(3)) != null) {
                     USER_LOG.warning(rs.getString(2), rs.getString(4), rs.getString(3), 3, packageName);
                 }
-
                 packageImport.addTaskImport(taskImport);
             }
 

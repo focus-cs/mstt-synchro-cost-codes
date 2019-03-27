@@ -20,7 +20,7 @@ import java.util.List;
 
 public class Runner {
 	
-	public static final String APP_INFO = "Mstt Synchro Cost Codes 2 v1.8";
+	public static final String APP_INFO = "Mstt Synchro Cost Codes v1.9";
 
 	/**
 	 * Logger Class instance.
@@ -85,7 +85,8 @@ public class Runner {
 
 		LOG.debug("Exit code=" + USER_LOG.getStatus());
 		// Exit process
-		Runtime.getRuntime().exit(USER_LOG.getStatus());
+                System.exit(USER_LOG.getStatus());
+		//Runtime.getRuntime().exit(USER_LOG.getStatus());
 	}
 
 	/**
