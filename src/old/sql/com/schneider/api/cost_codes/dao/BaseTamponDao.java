@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.schneider.api.cost_codes.dao;
+package old.sql.com.schneider.api.cost_codes.dao;
 
-import com.schneider.api.cost_codes.business.UserLog;
-import com.schneider.api.cost_codes.data.PackageImport;
-import com.schneider.api.cost_codes.data.ProjectImport;
-import com.schneider.api.cost_codes.data.TaskImport;
-import com.schneider.api.cost_codes.database.DbConnection;
+import old.sql.com.schneider.api.cost_codes.business.UserLog;
+import old.sql.com.schneider.api.cost_codes.data.PackageImport;
+import old.sql.com.schneider.api.cost_codes.data.ProjectImport;
+import old.sql.com.schneider.api.cost_codes.data.TaskImport;
+import old.sql.com.schneider.api.cost_codes.database.DbConnection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;

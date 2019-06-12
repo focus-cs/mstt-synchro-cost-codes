@@ -1,0 +1,7 @@
+2019-04-16 18:45:38,173 com.schneider.api.cost_codes.Runner.main(Runner.java:38) INFO  com.schneider.api.cost_codes.Runner - Mstt Synchro Cost Codes v1.10
+2019-04-16 18:45:38,176 com.schneider.api.cost_codes.Runner.main(Runner.java:48) DEBUG com.schneider.api.cost_codes.Runner - D:/Professionnel/MSTT/mstt-synchro-cost-codes/conf/dev/psconnect.properties properties file loaded
+2019-04-16 18:48:49,545 com.schneider.api.cost_codes.Runner.main(Runner.java:54) DEBUG com.schneider.api.cost_codes.Runner - Connected to PSNext
+2019-04-16 18:48:50,003 com.schneider.api.cost_codes.business.ProjectsManager.execute(ProjectsManager.java:122) DEBUG com.schneider.api.cost_codes.business.ProjectsManager - RE_IP_Owner data view row list size = 131
+2019-04-16 18:54:42,969 com.schneider.api.cost_codes.business.ProjectsManager.execute(ProjectsManager.java:152) DEBUG com.schneider.api.cost_codes.business.ProjectsManager - File = D:\Professionnel\MSTT\mstt-synchro-cost-codes\requests\ImportCC_Req88888.csv
+2019-04-16 18:54:42,969 com.schneider.api.cost_codes.data.FileImport.getData(FileImport.java:230) DEBUG com.schneider.api.cost_codes.data.FileImport - 0 projects found
+2019-04-16 18:54:43,009 com.schneider.api.cost_codes.Runner.main(Runner.java:73) DEBUG com.schneider.api.cost_codes.Runner - Exit code=0

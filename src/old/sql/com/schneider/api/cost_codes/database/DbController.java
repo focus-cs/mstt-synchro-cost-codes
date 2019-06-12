@@ -1,6 +1,6 @@
-package com.schneider.api.cost_codes.database;
+package old.sql.com.schneider.api.cost_codes.database;
 
-import com.schneider.api.cost_codes.data.FileImport;
+import old.sql.com.schneider.api.cost_codes.data.FileImport;
 import java.util.Properties;
 import org.apache.log4j.Logger;
 
